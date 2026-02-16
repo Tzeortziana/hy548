@@ -19,7 +19,7 @@ Prerequisites
 : CS-335 (Computer Networks), CS-345 (Operating Systems) or permission from the instructor
 
 Lecture schedule
-: Monday and Wednesday 13:00-15:00, in room H.206 (spring semester 2026)
+: Monday and Wednesday 13:00-15:00, in room H.212 (spring semester 2026)
 
 Contact:
 : hy548_at_csd.uoc.gr (instructor), hy548_at_lists.csd.uoc.gr
@@ -59,6 +59,8 @@ Internet-Scale Services:
 * Architecture and Dependability of Large-Scale Internet Services. David Oppenheimer and David Patterson. IEEE Internet Computing, vol. 6, no. 5, pp. 41-49, Sept.-Oct. 2002, [[available online](http://roc.cs.berkeley.edu/papers/inet-computing.pdf)]
 * On Designing and Deploying Internet-Scale Services. James Hamilton. Proceedings of the 21st Large Installation System Administration Conference (LISA '07), pp. 231-242, Dallas, TX, USENIX Association, Nov. 2007 [[available online](https://www.usenix.org/legacy/event/lisa07/tech/full_papers/hamilton/hamilton_html/index.html)]
 * Microservices: The Journey So Far and Challenges Ahead. Pooyan Jamshidi, Claus Pahl, Nabor C. Mendonça, James Lewis, Stefan Tilkov. IEEE Software, vol. 35, no. 3, pp. 24-35, May/June 2018 [[available online](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8354433)]
+* Running Wikipedia on Bare Metal, Open Source, and a Healthy Dose of Caching. Effie Mouzeli. Presentation at FOSDEM 2026 [[available online]]
+(https://fosdem.org/2026/schedule/event/YDLGLN-running_wikipedia_on_bare_metal_open_source_and_a_healthy_dose_of_caching/)
 
 Containers and Kubernetes:
 * Containers and Cloud: From LXC to Docker to Kubernetes. David Bernstein. IEEE Cloud Computing, vol. 1, no. 3, pp. 81-84, Sept. 2014 [[available online](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7036275)]
