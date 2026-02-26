@@ -1,5 +1,5 @@
 # HY548: Assignment 1 - Docker 
-## **Student:** Entisa Tzeortziana Komoritsan  
+## **Name:** Entisa Tzeortziana Komoritsan  
 ## **AM:** csdp1463 | **Email:** tzeortziana@csd.uoc.gr
 
 
@@ -144,23 +144,21 @@
 # Exercise 4
 
 * I created a GitHub Action to automate the build and push process for the Django application.
-    * **Repository Setup:** GitHub requires workflow files to be located in a specific hidden directory (`.github/workflows/`). I performed the following commands:
+    * **Repository Setup:** I forked the original repository to my personal GitHub account (`Tzeortziana/hy548`) and cloned it locally to my WSL environment. GitHub requires workflow files to be located in a specific hidden directory (`.github/workflows/`). I performed the following commands:
         * Create the workflow directory:
             * **Command:** `mkdir -p .github/workflows`
         * Create and edit the workflow file
             * **Command:** `nano .github/workflows/docker-publish.yml`
+            <img src="images/screen25.png" alt="Description" width="700" height:="700" >  
 
-    * After saving the file, I used Git to track the new directory and push it to the remote repository.  
+    * **Secrets Management** In accordance with security best practices, I avoided hardcoding sensitive credentials. Instead, I navigated to **Settings → Secrets and variables → Actions** in the GitHub repository and configured the following secrets:
+
+        * `DOCKER_HUB_USERNAME`: Stores my Docker Hub account name.
+        * `DOCKER_HUB_ACCESS_TOKEN`: Stores a Personal Access Token (PAT) rather than a password.
+
+    * I used Git to track the new directory and push it to the remote repository.  
     <img src="images/screen20.png" alt="Description" width="700" height:="700" >  
     <img src="images/screen22.png" alt="Description" width="700" height:="700" >  
     <img src="images/screen21.png" alt="Description" width="700" height:="700" >
 
    
-
-
-
-# Cloud-native Software Architectures
-
-This repository contains material for the [CS-548: Cloud-native Software Architectures](https://www.csd.uoc.gr/~hy548/en/) postgraduate course, taught at the [Computer Science Department](https://www.csd.uoc.gr), [University of Crete](https://www.uoc.gr).
-
-The course page is built with [Hugo](https://github.com/gohugoio/hugo), using the [Cactus theme](https://github.com/monkeyWzr/hugo-theme-cactus).
