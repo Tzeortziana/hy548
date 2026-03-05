@@ -115,14 +115,14 @@
 <img src="images/screen15.png" alt="Description">
 
 * **Debug ON**
-    * **Command**: `docker run -d -p 5000:8000 -e DJANGO_DEBUG=1 --name django-debug my-django-app` 
+    * **Command**: `docker run -d -p 5000:8000 -e DJANGO_DEBUG=1 -v $(pwd)/db:/app/db --name django-debug my-django-app` 
     * **Result**: Accessing a non-existent URL displays a detailed "Page not found (404)" error page. This page includes the URLconf defined in the app, the specific URL patterns tried, and an explicit note that `DEBUG = True` is set in the settings.  
     <img src="images/screen16.png" alt="Description" width="500" >
 
 
 
 * **Debug OFF**
-    * **Command**: `docker run -d -p 8001:8000 -e DJANGO_DEBUG=0 --name django-nodebug my-django-app` 
+    * **Command**: `docker run -d -p 5001:8000 -e DJANGO_DEBUG=0 -v $(pwd)/db:/app/db --name django-nodebug my-django-app` 
     * **Result**: Displays a simple, generic "Not Found" message stating "The requested resource was not found on this server." 
     <img src="images/screen17.png" alt="Description" width="500" >
 
