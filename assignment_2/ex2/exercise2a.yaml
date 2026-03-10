@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: download-script
+data:
+  download.sh: |
+    #!/bin/bash
+    apt-get update && apt-get install -y wget
+    mkdir -p /data
+    cd /data
+    wget -E -k -p https://www.csd.uoc.gr/
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: site-downloader-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu:24.04
+          command: ["/bin/bash", "/scripts/download.sh"]
+          volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+      restartPolicy: Never
+      volumes:
+        - name: script-volume
+          configMap:
+            name: download-script
+            defaultMode: 0777

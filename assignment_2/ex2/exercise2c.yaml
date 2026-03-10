@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-web
+  template:
+    metadata:
+      labels:
+        app: nginx-web
+    spec:
+      initContainers:
+        - name: install-and-download
+          image: ubuntu:24.04
+          command: ["/bin/bash", "/scripts/download.sh"]
+          volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+            - name: web-site-storage
+              mountPath: /data
+      containers:
+        - name: nginx
+          image: nginx:1.29.5-alpine
+          volumeMounts:
+            - name: web-site-storage
+              mountPath: /usr/share/nginx/html
+
+      volumes:
+        - name: script-volume
+          configMap:
+            name: download-script
+            defaultMode: 0777
+        - name: web-site-storage
+          persistentVolumeClaim:
+           claimName: site-pvc
