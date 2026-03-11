@@ -25,7 +25,7 @@ metadata:
   name: csd-service
 spec:
   selector:
-    app: csd-site # Matches Deployment label
+    app: csd-site 
   ports:
     - port: 80
       targetPort: 80

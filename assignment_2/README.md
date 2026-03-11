@@ -14,7 +14,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: demo-nginx
+  name: nginx-pod
   labels:
     app: nginx
 spec:
@@ -35,7 +35,7 @@ spec:
 
 ### 1b. Forward port 80 locally and answer the question
 
-* **Command:** `kubectl port-forward demo-nginx 8080:80`  
+* **Command:** `kubectl port-forward nginx-pod 8080:80`  
     <img src="images/screen2.png" alt="Description" width="500">
 
 * **What is the answer?**  
@@ -48,13 +48,13 @@ The answer is the default Nginx welcome page HTML. When accessing the forwarded 
 
 ### 1c. See the logs of the running container
 
-* **Command:** `kubectl logs demo-nginx`  
+* **Command:** `kubectl logs nginx-pod`  
     <img src="images/screen5.png" alt="Description" width="500">
 
 
 ### 1d. Open a shell session inside the running container and change the first sentence of the default page to "Welcome to MY nginx!". Close the session. Validate the change.
 
-* **Command:** `kubectl logs demo-nginx` : Opens an interactive shell inside the container    
+* **Command:** `kubectl exec -it nginx-pod -- /bin/sh` : Opens an interactive shell inside the container    
 * **Command:** `sed -i 's/Welcome to nginx!/Welcome to MY nginx!/g' /usr/share/nginx/html/index.html` : Changes the first sentence in the index.html file  
 * **Command:** `curl [http://127.0.0.1:8080](http://127.0.0.1:8080)` : Validates the change locally  
   <img src="images/screen6.png" alt="Description" width="500">
@@ -62,16 +62,16 @@ The answer is the default Nginx welcome page HTML. When accessing the forwarded 
 
 ### 1e. From your computer terminal (outside the container), download the default page locally and upload another one in its place. Validate the change.
 
-* **Command:** `kubectl cp demo-nginx:/usr/share/nginx/html/index.html ./index.html` : Downloads the file from the Pod to the local machine    
+* **Command:** `kubectl cp nginx-pod:/usr/share/nginx/html/index.html ./index.html` : Downloads the file from the Pod to the local machine    
     <img src="images/screen8.png" alt="Description" width="500">  
-* **Command:** `kubectl cp ./index.html demo-nginx:/usr/share/nginx/html/index.html` : Uploads the new file back to the Pod, overwriting the old one    
+* **Command:** `kubectl cp ./index.html nginx-pod:/usr/share/nginx/html/index.html` : Uploads the new file back to the Pod, overwriting the old one    
 * **Command:** `curl [http://127.0.0.1:8080](http://127.0.0.1:8080)` : Validates the change locally    
   <img src="images/screen9.png" alt="Description" width="500">
 
 
 ### 1f. Stop the Pod and remove the manifest from Kubernetes.
 
-* **Command:** `kubectl delete pod demo-nginx`  
+* **Command:** `kubectl delete pod nginx-pod`  
 
 
 <hr style="border: 2px solid white;">  
@@ -88,12 +88,11 @@ metadata:
   name: download-script
 data:
   download.sh: |
+   download.sh: |
     #!/bin/bash
     apt-get update && apt-get install -y wget
     mkdir -p /data
-    cd /data
-    wget -E -k -p https://www.csd.uoc.gr/
-
+    wget -E -k -p -nH --cut-dirs=100 -P /data https://www.csd.uoc.gr/
 ---
 apiVersion: batch/v1
 kind: Job

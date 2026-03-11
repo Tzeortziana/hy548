@@ -7,8 +7,7 @@ data:
     #!/bin/bash
     apt-get update && apt-get install -y wget
     mkdir -p /data
-    cd /data
-    wget -E -k -p https://www.csd.uoc.gr/
+    wget -E -k -p -nH --cut-dirs=100 -P /data https://www.csd.uoc.gr/
 
 ---
 apiVersion: batch/v1
