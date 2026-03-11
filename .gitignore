@@ -1,2 +1,4 @@
 .DS_Store
 venv/
+kubectl
+minikube-linux-amd64

@@ -266,3 +266,219 @@ spec:
     * **Command:** `kubectl port-forward deployment/nginx-deployment 8082:80`  
     <img src="images/screen20.png" alt="Description" width="500">  
     <img src="images/screen21.png" alt="Description" width="500">  
+
+
+<hr style="border: 2px solid white;">  
+
+## Exercise 3
+
+
+### 3a. Create your own container based on the Nginx one that will download a user-defined site on startup. Provide the Dockerfile and upload the image to your Docker Hub account.
+
+**`entryponit.sh`:**
+```bash
+#!/bin/bash
+
+TARGET_URL=${URL:-"https://www.csd.uoc.gr"}
+
+echo "Downloading site: $TARGET_URL"
+
+apt-get update && apt-get install -y wget
+mkdir -p /usr/share/nginx/html
+
+wget -E -k -p -P /usr/share/nginx/html -nH --cut-dirs=100 $TARGET_URL
+
+nginx -g 'daemon off;'
+
+```
+
+**`Dockerfile`:**
+```
+FROM nginx:1.25
+
+RUN apt-get update && apt-get install -y bash
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+```
+
+On container startup, the script checks an environment variable named URL and uses wget to download the specified website directly into the Nginx document root `(/usr/share/nginx/html)`. This allows the same image to be reused for different sites simply by changing the environment variable.
+
+* **Command:** `docker build -t tzeortziana/nginx-downloader:v1 .`
+
+* **Command:** `docker push tzeortziana/nginx-downloader:v1`
+
+* **Validation Command:** `docker logs test-csd`: See the wget activity inside test container
+    <img src="images/screen23.png" alt="Description" width="500">  
+
+* **Validation Command:** `docker run -d -p 8085:80 --name test-csd tzeortziana/nginx-downloader:v1`
+    <img src="images/screen22.png" alt="Description" width="500">  
+
+
+### 3b. Provide a YAML that uses your custom container to run 2 Pods serving the csd.uoc.gr site in a Deployment, as well as a Service that allows the result to be externally accessible. Provide the commands needed to validate that it works with minikube (you may need to run minikube tunnel).
+
+**Manifest (`exercise3b.yaml`):**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csd-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: csd-web
+  template:
+    metadata:
+      labels:
+        app: csd-web
+    spec:
+      containers:
+        - name: nginx-downloader
+          image: tzeortziana/nginx-downloader:v1
+          imagePullPolicy: Always
+          env:
+            - name: URL
+              value: "https://www.csd.uoc.gr"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csd-service
+spec:
+  type: NodePort
+  selector:
+    app: csd-web
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080
+```
+* **Command:** `kubectl apply -f exercise3b.yaml`  
+    <img src="images/screen24.png" alt="Description" width="500">  
+
+* **Command:** `minikube tunnel` : in a second terminal  
+    <img src="images/screen24.png" alt="Description" width="500">
+
+* **Command:** `kubectl get pods -l app=csd-web` : check if they are ready  
+    <img src="images/screen26.png" alt="Description" width="500">
+
+* **Command:** `minikube service csd-service` : Minikube automatically starts a tunnel to bridge the internal cluster network to 127.0.0.1  
+    <img src="images/screen27.png" alt="Description" width="500">  
+    <img src="images/screen28.png" alt="Description" width="500">  
+
+
+
+### 3c. Extend the previous YAML with another Deployment/Service pair serving the math.uoc.gr site. Add an Ingress object that routes /csd to the first service and /math to the second. Provide the commands needed to validate that it works with minikube (you will need to enable the ingress addon).
+
+**Manifest (`exercise3c.yaml`):**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csd-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: csd-site
+  template:
+    metadata:
+      labels:
+        app: csd-site
+    spec:
+      containers:
+        - name: csd-container
+          image: tzeortziana/nginx-downloader:v1
+          env:
+            - name: URL
+              value: "https://www.csd.uoc.gr"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csd-service
+spec:
+  selector:
+    app: csd-site # Matches Deployment label
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: math-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: math-site
+  template:
+    metadata:
+      labels:
+        app: math-site
+    spec:
+      containers:
+        - name: math-container
+          image: tzeortziana/nginx-downloader:v1
+          env:
+            - name: URL
+              value: "https://www.math.uoc.gr"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: math-service
+spec:
+  selector:
+    app: math-site
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uoc-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /csd
+            pathType: Prefix
+            backend:
+              service:
+                name: csd-service
+                port:
+                  number: 80
+          - path: /math
+            pathType: Prefix
+            backend:
+              service:
+                name: math-service
+                port:
+                  number: 80
+
+```
+* **Command:** `minikube addons enable ingress` : Enables the ingress controller  
+
+* **Command:** `kubectl apply -f exercise3c.yaml` : Applies the multi-site configuration    
+
+* **Command:** `minikube tunnel` : Starts the tunnel  
+    <img src="images/screen29.png" alt="Description" width="500">
+
+* **Verification Command:** `kubectl get pods`: Verify both CSD and Math pods are running  
+* **Verification Command:** `kubectl get ingress`: Confirm the ingress is active   
+    <img src="images/screen30.png" alt="Description" width="500">
+
+* **Validation:** Open browser at http://localhost/csd and http://localhost/math to verify path-based routing  
+        <img src="images/screen31.png" alt="Description" width="500">
