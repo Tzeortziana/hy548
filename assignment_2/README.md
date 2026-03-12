@@ -88,7 +88,6 @@ metadata:
   name: download-script
 data:
   download.sh: |
-   download.sh: |
     #!/bin/bash
     apt-get update && apt-get install -y wget
     mkdir -p /data
@@ -205,7 +204,7 @@ spec:
 * **Command:** `kubectl port-forward nginx-server 8081:80`: Forwards the Nginx server locally to validate the content is being served from the shared volume. 
     <img src="images/screen15.png" alt="Description" width="500"> 
 
-* **Description of Data Communication:**  
+* **Briefly describe how data is communicated between containers**  
 Data is communicated between containers using a shared PersistentVolumeClaim (PVC). While containers are isolated by default, a PVC acts as a durable storage bridge. In this architecture, the CronJob Pod (Producer) mounts the PVC to write the downloaded website data, and the Nginx Pod (Consumer) mounts the same PVC to serve that content. This ensures data persistence independently of the Pods' lifecycles.
 
 
@@ -404,7 +403,7 @@ metadata:
   name: csd-service
 spec:
   selector:
-    app: csd-site # Matches Deployment label
+    app: csd-site 
   ports:
     - port: 80
       targetPort: 80
