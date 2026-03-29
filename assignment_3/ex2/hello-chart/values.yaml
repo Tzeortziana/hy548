@@ -1,0 +1,10 @@
+appName: "hello"
+
+message: "Hello World!"
+
+endpoint: "/hello"
+
+resources: {}
+
+autoscaler:
+  maxReplicas: 10
