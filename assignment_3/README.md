@@ -7,6 +7,11 @@
 
 ## Exercise 1
 
+Find the YAML files here:   
+- [hello-ingress.yaml](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex1/hello-ingress.yaml)
+- [locust.yaml](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex1/locust.yaml)  
+
+
 ### 1a. To limit each Pod to a maximum of 20% CPU and 256MB RAM.
 **`hello-ingress.yaml`:**
 ```yaml
