@@ -75,7 +75,7 @@ minikube tunnel
 
 ### Following on from the previous exercise, create a Helm chart for your modified "hello world" service.
 
-The chart was configured to use `values.yaml` to parameterize the application name, message, endpoint, resource limits, and HPA maximum replicas. The complete [**Helm Chart (hello-chart)**](https://github.com/Tzeortziana/hy548/tree/main/assignment_3/ex2/hello-chart) directory.
+The chart was configured to use `values.yaml` to parameterize the application name, message, endpoint, resource limits, and HPA maximum replicas. The complete [**Helm Chart (hello-chart)**](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2) directory.
 
 ### Installation commands:
 ```bash
@@ -86,4 +86,4 @@ helm install goodbye ./hello-chart \
   --set resources.cpu="250m" \
   --set autoscaler.maxReplicas=20
 ```
-A runnable bash script of this command, [install-goodbye.sh](https://github.com/Tzeortziana/hy548/tree/main/assignment_3/ex2/install-goodbye.sh), is also included in the repo.
+A runnable bash script of this command, [install-goodbye.sh](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2/install-goodbye.sh), is also included in the repo.
