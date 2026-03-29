@@ -75,7 +75,7 @@ minikube tunnel
 
 ### Following on from the previous exercise, create a Helm chart for your modified "hello world" service.
 
-The chart was configured to use `values.yaml` to parameterize the application name, message, endpoint, resource limits, and HPA maximum replicas. The complete [**Helm Chart (hello-chart)**](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2) directory.
+The chart was configured to use `values.yaml` to parameterize the application name, message, endpoint, resource limits, and HPA maximum replicas. Here: [**Helm Chart (hello-chart)**](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2/hello-chart)
 
 ### Installation commands:
 ```bash
@@ -86,4 +86,55 @@ helm install goodbye ./hello-chart \
   --set resources.cpu="250m" \
   --set autoscaler.maxReplicas=20
 ```
-A runnable bash script of this command, [install-goodbye.sh](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2/install-goodbye.sh), is also included in the repo.
+A runnable bash script of this command, [install-goodbye.sh](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex2/install-goodbye.sh), is also included in the repo.  
+<img src="images/screen6.png" alt="Description" width="500">
+
+When i access http://localhost/goodbye:  
+<img src="images/screen7.png" alt="Description" width="500">
+
+**Results of:** `kubectl get hpa goodbye-hpa`, `kubectl describe deployment goodbye | grep -i cpu` and `kubectl get all`  
+<img src="images/screen5.png" alt="Description" width="500">
+
+
+
+## Exercise 3
+
+Default addon was disabled:
+```bash
+minikube addons disable ingress
+```
+
+Nginx Ingress Controller was installed via Helm:
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx
+```
+
+To verify the new Ingress Controller, I redeployed the Yaml from Exercise 1.
+
+I added in `hello-ingress.yaml` the line:  `ingressClassName: nginx` to the `spec` section of the `Ingress manifest`.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-ingress
+spec:
+  ingressClassName: nginx   # <-- 
+  rules:
+  - http:
+      paths:
+      - path: /hello
+        pathType: Prefix
+
+```
+Updated `hello-ingress.yaml` here: [hello-ingress.yaml](https://github.com/Tzeortziana/hy548/tree/master/assignment_3/ex3/hello-ingress.yaml)
+
+### Testing:
+
+In terminal: `kubectl get all`    
+<img src="images/screen9.png" alt="Description" width="500">
+
+In http://localhost/hello/ :  
+<img src="images/screen8.png" alt="Description" width="500">
