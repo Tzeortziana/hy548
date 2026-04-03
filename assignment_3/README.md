@@ -1,4 +1,4 @@
-# Assignment 2: Kubernetes
+# Assignment 3
 ## **Course:** CS-548 Cloud-native Software Architectures  
 ## **Name:** Entisa Tzeortziana Komoritsan
 ## **AM:** csdp1463 | **email:** tzeortziana@csd.uoc.gr
